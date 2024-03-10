@@ -50,6 +50,8 @@ def draw_graph(
     save_graph: bool = False,
     filename: str | None = None,
     directory: str = '.',
+    font: str = 'Linux libertine',
+    fontsize: int = 10,
     **kwargs: Any,
 ) -> ComputationGraph:
     '''Returns visual representation of the input Pytorch Module with
@@ -184,6 +186,10 @@ def draw_graph(
     graph_attr = {
         'ordering': 'in',
         'rankdir': graph_dir,
+        'fontname': font,
+        'dpi': '100',
+        # 'size': '8.3, 11.7',
+        # 'fontsize': str(fontsize),
     }
 
     # visual settings from torchviz
@@ -192,16 +198,18 @@ def draw_graph(
         'style': 'filled',
         'shape': 'plaintext',
         'align': 'left',
-        'fontsize': '10',
+        'fontsize': str(fontsize),
         'ranksep': '0.1',
         'height': '0.2',
-        'fontname': 'Linux libertine',
+        'fontname': font,
         'margin': '0',
     }
 
     edge_attr = {
-        'fontsize': '10',
+        # 'fontsize': str(fontsize),
+        'fontname': font,
     }
+
     visual_graph = graphviz.Digraph(
         name=graph_name, engine='dot', strict=strict,
         graph_attr=graph_attr, node_attr=node_attr, edge_attr=edge_attr,
@@ -225,7 +233,7 @@ def draw_graph(
     model_graph.fill_visual_graph()
 
     if save_graph:
-        model_graph.visual_graph.render(format='png')
+        model_graph.visual_graph.render(format='pdf', cleanup=True)
     return model_graph
 
 
@@ -393,7 +401,8 @@ def get_recorder_tensor(
     input_node = TensorNode(
         tensor=input_recorder_tensor,
         depth=0,
-        name='input-tensor',
+        # name='input-tensor',
+        name='Input',
     )
 
     input_recorder_tensor.tensor_nodes.append(input_node)

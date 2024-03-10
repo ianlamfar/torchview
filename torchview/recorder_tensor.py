@@ -79,7 +79,8 @@ def creation_ops_wrapper(
         input_node = TensorNode(
             tensor=input_recorder_tensor,
             depth=current_depth,  # type: ignore[arg-type]
-            name='input-tensor' if current_depth == 0 else 'hidden-tensor',
+            # name='input-tensor' if current_depth == 0 else 'hidden-tensor',
+            name='Input' if current_depth == 0 else 'Hidden',
             context=current_context
         )
         current_context.append(input_node)  # type: ignore[attr-defined]
@@ -264,7 +265,8 @@ class RecorderTensor(torch.Tensor):
         attach_kwargs = {
             'parents': cur_node, 'depth': cur_depth, "context": input_context,
             'is_aux': False, 'parent_hierarchy': {cur_depth: cur_node},
-            'name': 'output-tensor' if cur_depth == 0 else 'hidden-tensor'
+            # 'name': 'output-tensor' if cur_depth == 0 else 'hidden-tensor',
+            'name': 'Output' if cur_depth == 0 else 'Hidden',
         }
         traverse_data_inplace(out, attach_node(attach_kwargs))
 
@@ -449,7 +451,8 @@ def process_output_node(
             insert_empty_pass_node(recorded_data, output_node)
 
         recorded_data.tensor_nodes[-1].depth = cur_depth
-        name = 'output-tensor' if cur_depth == 0 else 'hidden-tensor'
+        # name = 'output-tensor' if cur_depth == 0 else 'hidden-tensor'
+        name = 'Output' if cur_depth == 0 else 'Hidden'
         recorded_data.tensor_nodes[-1].name = name
         recorded_data.tensor_nodes[-1].parent_hierarchy[cur_depth] = cur_node
     return _func
